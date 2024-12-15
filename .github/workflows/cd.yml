@@ -1,0 +1,43 @@
+name: CD to GKE
+
+on:
+  push:
+    branches:
+      - develop  # Adjust this to your default branch
+
+jobs:
+  build-deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        version: 'latest'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Authenticate Docker to GCR
+      run: |
+            gcloud auth configure-docker
+
+    - name: Build and push Docker image
+      run: |
+        export IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT_ID }}/my-app-api:${{ github.sha }}
+        docker build -t $IMAGE_NAME .
+        docker push $IMAGE_NAME
+
+    - name: Replace placeholders in deployment.yaml
+      run: |
+        sed -i "s|\${GCP_PROJECT_ID}|${{ secrets.GCP_PROJECT_ID }}|g" k8s/deployment.yaml
+        sed -i "s|\${GITHUB_SHA}|${{ github.sha }}|g" k8s/deployment.yaml
+
+    - name: Authenticate Kubectl with GKE
+      run: |
+          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER_NAME }} --zone ${{ secrets.GKE_ZONE }} --project ${{ secrets.GCP_PROJECT_ID }}
+
+    - name: Deploy to GKE
+      run: kubectl apply -f k8s/deployment.yaml
