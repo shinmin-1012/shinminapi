@@ -12,7 +12,7 @@ spec:
       labels:
         app: my-app-api
     spec:
-      serviceAccountName: Shinmin-Service-Account
+      serviceAccountName: shinmin-service-account
       containers:
       - name: my-app-api
         image: gcr.io/${GCP_PROJECT_ID}/my-app-api:${GITHUB_SHA}  # This will be updated by GitHub Actions
