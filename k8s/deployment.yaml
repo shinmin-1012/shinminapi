@@ -12,11 +12,18 @@ spec:
       labels:
         app: my-app-api
     spec:
+      serviceAccountName: Shinmin-Service-Account
       containers:
       - name: my-app-api
         image: gcr.io/${GCP_PROJECT_ID}/my-app-api:${GITHUB_SHA}  # This will be updated by GitHub Actions
         ports:
         - containerPort: 3000
+
+      - name: cloud-sql-proxy
+        image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.11.4
+        args:
+          - "--structured-logs"
+          - "--port=5432"
 ---
 apiVersion: v1
 kind: Service
