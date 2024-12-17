@@ -20,10 +20,19 @@ spec:
         - containerPort: 3000
 
       - name: cloud-sql-proxy
-        image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:latest
+        image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.11.4
         args:
-          - "--structured-logs"
-          - "--port=5432"
+            - "--structured-logs"
+            - "--dir=/cloudsql"
+            - "--port=5432"
+            - "--enable_iam_authentication"
+        volumeMounts:
+            - name: cloudsql
+              mountPath: /cloudsql
+      volumes:
+        - name: cloudsql
+          emptyDir:
+            medium: Memory
 ---
 apiVersion: v1
 kind: Service
