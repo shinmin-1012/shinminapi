@@ -3,7 +3,7 @@ import { config as dotenvConfig } from 'dotenv';
 
 dotenvConfig({ path: '.env' });
 
-const DATABASE_HOST = process.env.DATABASE_HOST ?? '34.143.189.199';
+const DATABASE_HOST = process.env.DATABASE_HOST ?? 'localhost';
 const DATABASE_PORT = process.env.DATABASE_PORT ?? 5432;
 const USER_NAME = process.env.DATABASE_USERNAME ?? 'tuanhta';
 const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD ?? ':BMAt4RtL"YCa,)@';
