@@ -16,4 +16,7 @@ export class User {
 
   @Column()
   newField: string;
+
+  @Column({ nullable: true })
+  addNewField: string;
 }

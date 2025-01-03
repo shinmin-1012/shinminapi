@@ -9,6 +9,7 @@ export class AppService {
   constructor(private readonly configService: ConfigService) {}
   getHello(): string {
     const value = this.configService.get<string>('YOUR_ENV_VARIABLE');
-    return 'Get value from env => ' + value;
+    const secretValue = this.configService.get<string>('YOUR_SECRET');
+    return `Config map: ${value} - Secret: ${secretValue} `;
   }
 }
